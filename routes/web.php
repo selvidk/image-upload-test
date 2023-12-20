@@ -16,5 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\ImageProcessing::class, 'index']);
 
-Route::post('/image/upload', [App\Http\Controllers\ImageProcessing::class, 'imageUpload']);
-Route::post('/image/delete', [App\Http\Controllers\ImageProcessing::class, 'imageDelete']);
+Route::post('/image/upload', [App\Http\Controllers\ImageProcessing::class, 'uploadImage']);
+Route::get('/image/delete/{del_image}', [App\Http\Controllers\ImageProcessing::class, 'deleteImage']);

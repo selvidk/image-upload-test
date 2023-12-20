@@ -85,15 +85,26 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form action="{{ url('/image/delete') }}" method="post">
+                            <form action="{{ url('/image/update') }}" method="post">
                                 @csrf
                                 <div class="modal-body">
-                                    <p>Delete:</p>
-                                    <p>{{ explode('_', $image['file_name'])[1] }}</p>
-                                    <input type="hidden" name="image_del" id="image" value="{{ $image['file_name'] }}">
+                                    <img src="{{ url('asset/images/'. $image['file_name']) }}" alt=""
+                                        class="img-thumbnail mb-3">
+                                    <input type="file" class="form-control form-control-md mb-3" name="update_image"
+                                        id="update_image">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">Image Name</span>
+                                        <input type="text" class="form-control" name="update_name" id="update_name"
+                                            value="{{ explode('_', $image['file_name'])[1] }}" required>
+                                    </div>
+                                    {{-- <p>Delete:</p>
+                                    <p>{{ explode('_', $image['file_name'])[1] }}</p> --}}
+                                    <input type="hidden" name="id_image" id="image" value="{{ $image['file_name'] }}">
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    <a href="/image/delete/{{ $image['file_name'] }}"
+                                        class="btn btn-sm btn-danger">Delete</a>
+                                    <button type="submit" class="btn btn-sm btn-primary">Update</button>
                                 </div>
                             </form>
                         </div>

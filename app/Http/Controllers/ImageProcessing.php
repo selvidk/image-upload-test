@@ -22,7 +22,7 @@ class ImageProcessing extends Controller
         return view('index', ['images' => $images]);
     }
 
-    public function imageUpload(Request $request)
+    public function uploadImage(Request $request)
     {
         $request->validate([
             'image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:999'],
@@ -42,11 +42,10 @@ class ImageProcessing extends Controller
         if ($kb_size > 100) {
             if ($get_image_type == 'image/jpeg' || $get_image_type == 'image/jpg') {
                 $image = imagecreatefromjpeg($req_image);
-                imagejpeg($image, $new_image, 40);
             } else {
                 $image = imagecreatefrompng($req_image);
-                imagejpeg($image, $new_image, 9);
             }
+            imagejpeg($image, $new_image, 40);
         } else {
             $req_image->move($path, $new_image);
         }
@@ -54,10 +53,29 @@ class ImageProcessing extends Controller
         return redirect()->back()->with('success', 'Success');
     }
 
-    public function imageDelete(Request $request)
+    // public function updateImage(Request $request)
+    // {
+    //     if (File::exists(public_path('asset/images/' . $request->id_image))) {
+    //         if ($request->hasFile('update_image') && $request->has('update_name')) {
+    //             $request->validate([
+    //                 'image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:999'],
+    //             ]);
+
+    //             return redirect()->back()->with('error', 'Success');
+
+    //         }
+    //         // File::delete(public_path('asset/images/' . $request->id_image));
+    //         return redirect()->back()->with('success', 'Success....');
+    //     } else {
+    //         return redirect()->back()->with('failed', 'Image not exist....');
+    //     }
+    // }
+
+
+    public function deleteImage($del_image)
     {
-        if (File::exists(public_path('asset/images/' . $request->image_del))) {
-            File::delete(public_path('asset/images/' . $request->image_del));
+        if (File::exists(public_path('asset/images/' . $del_image))) {
+            File::delete(public_path('asset/images/' . $del_image));
             return redirect()->back()->with('success', 'Success....');
         } else {
             return redirect()->back()->with('failed', 'Image not exist....');
