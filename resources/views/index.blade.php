@@ -39,6 +39,18 @@
                     <p class="error-message">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="col-auto mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">Image Name</span>
+                        <input type="text"
+                            class="form-control form-control-md @error('image_name') is-invalid @enderror"
+                            name="image_name" id="image_name">
+
+                    </div>
+                    @error('image_name')
+                    <p class="error-message">{{ $message }}</p>
+                    @enderror
+                </div>
                 <div class="col-auto">
                     <button class="btn btn-primary">Upload</button>
                 </div>
@@ -58,6 +70,13 @@
             </div>
         </div>
         @endif
+        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div class="alert-message">
+                <strong>{{ $error }}</strong>
+            </div>
+        </div>
+        @endforeach
         <table class="table mt-3" style="counter-reset: rowNumber;">
             <thead>
                 <th>Image</th>
@@ -85,7 +104,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
-                            <form action="{{ url('/image/update') }}" method="post">
+                            <form action="{{ url('/image/update') }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <div class="modal-body">
                                     <img src="{{ url('asset/images/'. $image['file_name']) }}" alt=""
@@ -95,7 +114,8 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">Image Name</span>
                                         <input type="text" class="form-control" name="update_name" id="update_name"
-                                            value="{{ explode('_', $image['file_name'])[1] }}" required>
+                                            value="{{ explode('_', explode('.', $image['file_name'])[0])[1] }}"
+                                            required>
                                     </div>
                                     {{-- <p>Delete:</p>
                                     <p>{{ explode('_', $image['file_name'])[1] }}</p> --}}
