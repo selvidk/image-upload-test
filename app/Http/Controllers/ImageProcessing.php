@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Collection;
 
 class ImageProcessing extends Controller
 {
@@ -23,6 +22,23 @@ class ImageProcessing extends Controller
         return view('index', ['images' => $images]);
     }
 
+    public function compressFile($req_image, $get_image_type, $new_image, $path)
+    {
+        $get_image_size = $req_image->getSize();
+        $kb_size        = $get_image_size / 1024;
+
+        if ($kb_size > 100) {
+            if ($get_image_type == 'image/jpeg' || $get_image_type == 'image/jpg') {
+                $image = imagecreatefromjpeg($req_image);
+            } else {
+                $image = imagecreatefrompng($req_image);
+            }
+            imagejpeg($image, $new_image, 40);
+        } else {
+            $req_image->move($path, $new_image);
+        }
+    }
+
     public function uploadImage(Request $request)
     {
         $request->validate([
@@ -38,19 +54,7 @@ class ImageProcessing extends Controller
         $path           = public_path('asset/images/');
         $new_image      = $path . $new_image_name;
 
-        $get_image_size = $req_image->getSize();
-        $kb_size        = $get_image_size / 1024;
-
-        if ($kb_size > 100) {
-            if ($get_image_type == 'image/jpeg' || $get_image_type == 'image/jpg') {
-                $image = imagecreatefromjpeg($req_image);
-            } else {
-                $image = imagecreatefrompng($req_image);
-            }
-            imagejpeg($image, $new_image, 40);
-        } else {
-            $req_image->move($path, $new_image);
-        }
+        $this->compressFile($req_image, $get_image_type, $new_image, $path);
 
         return redirect()->back()->with('success', 'Success');
     }
@@ -79,19 +83,7 @@ class ImageProcessing extends Controller
                 $path           = public_path('asset/images/');
                 $new_image      = $path . $new_image_name;
 
-                $get_image_size = $req_image->getSize();
-                $kb_size        = $get_image_size / 1024;
-
-                if ($kb_size > 100) {
-                    if ($get_image_type == 'image/jpeg' || $get_image_type == 'image/jpg') {
-                        $image = imagecreatefromjpeg($req_image);
-                    } else {
-                        $image = imagecreatefrompng($req_image);
-                    }
-                    imagejpeg($image, $new_image, 40);
-                } else {
-                    $req_image->move($path, $new_image);
-                }
+                $this->compressFile($req_image, $get_image_type, $new_image, $path);
 
                 if ($request->update_name != $old_name) {
                     File::delete(public_path('asset/images/' . $request->id_image));
