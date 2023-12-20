@@ -51,10 +51,18 @@
             </div>
         </div>
         @endif
+        @if ($message = Session::get('failed'))
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <div class="alert-message">
+                <strong>{{ $message }}</strong>
+            </div>
+        </div>
+        @endif
         <table class="table mt-3" style="counter-reset: rowNumber;">
             <thead>
                 <th>Image</th>
                 <th>Image Name</th>
+                <th>Image Size</th>
                 <th>Action</th>
             </thead>
             <tbody>
@@ -63,8 +71,9 @@
                 @endphp
                 @foreach ($images as $image)
                 <tr>
-                    <td><img src="{{ url('asset/images/'. $image->getFilename()) }}" width="100"></td>
-                    <td>{{ explode('_', $image->getFilename())[1] }}</td>
+                    <td><img src="{{ url('asset/images/'. $image['file_name']) }}" width="100"></td>
+                    <td>{{ explode('_', $image['file_name'])[1] }}</td>
+                    <td>{{ $image['file_size'] }} Kb</td>
                     <td style="width: 5px"><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                             data-bs-target="#modalDelete{{ $i++ }}">Update</a></td>
                 </tr>
@@ -80,9 +89,8 @@
                                 @csrf
                                 <div class="modal-body">
                                     <p>Delete:</p>
-                                    <p>{{ explode('_', $image->getFilename())[1] }}</p>
-                                    <input type="hidden" name="image_del" id="image"
-                                        value="{{ $image->getFilename() }}">
+                                    <p>{{ explode('_', $image['file_name'])[1] }}</p>
+                                    <input type="hidden" name="image_del" id="image" value="{{ $image['file_name'] }}">
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>

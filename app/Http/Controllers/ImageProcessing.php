@@ -4,13 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Collection;
 
 class ImageProcessing extends Controller
 {
     public function index()
     {
-        $images = File::allFiles(public_path('asset/images'));
-        return view('index')->with(array('images' => $images));
+        foreach (File::allFiles(public_path('asset/images')) as $image) {
+            $image_name = $image->getFilename();
+            $image_size = $image->getSize();
+
+            $images[] = Collection::make([
+                'file_name' => $image_name,
+                'file_size' => $image_size / 1024,
+            ]);
+        }
+        return view('index', ['images' => $images]);
     }
 
     public function imageUpload(Request $request)
@@ -36,7 +45,7 @@ class ImageProcessing extends Controller
                 imagejpeg($image, $new_image, 40);
             } else {
                 $image = imagecreatefrompng($req_image);
-                imagepng($image, $new_image, 0);
+                imagejpeg($image, $new_image, 9);
             }
         } else {
             $req_image->move($path, $new_image);
@@ -47,8 +56,11 @@ class ImageProcessing extends Controller
 
     public function imageDelete(Request $request)
     {
-        File::delete(public_path('asset/images/' . $request->image_del));
-
-        return redirect()->back()->with('success', 'Success....');
+        if (File::exists(public_path('asset/images/' . $request->image_del))) {
+            File::delete(public_path('asset/images/' . $request->image_del));
+            return redirect()->back()->with('success', 'Success....');
+        } else {
+            return redirect()->back()->with('failed', 'Image not exist....');
+        }
     }
 }
