@@ -63,6 +63,7 @@ class ImageProcessing extends Controller
             if ($request->hasFile('update_image') && $request->has('update_name')) {
                 $request->validate([
                     'update_image' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:999'],
+                    'image_name'   => ['required', 'string', 'max:10'],
                 ]);
 
                 $req_image      = $request->file('update_image');
@@ -96,6 +97,9 @@ class ImageProcessing extends Controller
                     File::delete(public_path('asset/images/' . $request->id_image));
                 }
             } else {
+                $request->validate([
+                    'image_name'   => ['required', 'string', 'max:10'],
+                ]);
                 rename(public_path('asset/images/' . $request->id_image), public_path('asset/images/' . explode('_', $request->id_image)[0] . '_' . $request->update_name . '.' . explode('.', $request->id_image)[1]));
             }
             // File::delete(public_path('asset/images/' . $request->id_image));
