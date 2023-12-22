@@ -1,7 +1,5 @@
 ## Deskripsi
-Sistem sederhana untuk upload dan update file .jpg, .jpeg, .png
-Terdapat proses untuk upload file ke folder public/asset/images, update, dan delete
-Sistem otomais melakukan compress pada file menjadi ukuran dibawah 100kb
+Sistem sederhana untuk upload dan update file .jpg, .jpeg, .png. Terdapat proses untuk upload file ke folder public/asset/images, update, dan delete. Sistem otomais melakukan compress pada file menjadi ukuran dibawah 100kb
 
 ## Dikembangkan Menggunakan
 -   [Laravel Framework 8.83.27](https://laravel.com/docs/8.x)
